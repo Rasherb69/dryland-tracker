@@ -1195,7 +1195,7 @@
     return '<div class="day-card">'
       + '<div class="day-head"><div class="day-letter">' + day + '</div><div class="day-focus"><div class="name">' + esc(info.label) + '</div><div class="tagline">' + esc(info.tagline) + '</div></div></div>'
       + '<div class="table-wrap"><table class="plan-table"><thead><tr><th class="pic-col"><span class="sr-only">Move</span></th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th><th>Notes</th></tr></thead><tbody>' + trs + '</tbody></table></div>'
-      + (hasFlag ? '<div class="legend">&#9873; modified for Andrea&#39;s elbow &mdash; see the callout under <em>Andrea&#39;s elbow</em>.</div>' : '')
+      + (hasFlag ? '<div class="legend"><span class="flag">&#9873;</span> modified for Andrea&#39;s elbow &mdash; see the callout under <em>Andrea&#39;s elbow</em>.</div>' : '')
       + '</div>';
   }
 
