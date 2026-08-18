@@ -342,9 +342,9 @@
   .table-wrap{overflow-x:auto;}
   .plan-table{width:100%;border-collapse:collapse;font-size:0.82rem;min-width:560px;}
   .plan-table th{text-align:left;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);padding:0.6rem 0.8rem 0.4rem;font-weight:700;}
-  .plan-table th.pic-col{width:48px;padding:0.6rem 0.3rem 0.4rem 0.8rem;}
+  .plan-table th.pic-col{width:96px;padding:0.6rem 0.3rem 0.4rem 0.8rem;}
   .plan-table td{padding:0.55rem 0.8rem;border-top:1px solid var(--line);vertical-align:top;}
-  .plan-table td.pic{width:48px;padding:0.5rem 0.3rem 0.5rem 0.8rem;}
+  .plan-table td.pic{width:96px;padding:0.5rem 0.3rem 0.5rem 0.8rem;}
   .pictogram{display:block;border-radius:8px;border:1px solid var(--line);background:#fff;}
   .plan-table td.exercise{font-weight:600;}
   .muscle-line{font-family:var(--sans);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);font-weight:600;margin-top:0.2rem;}
@@ -1184,7 +1184,7 @@
     var hasFlag = rows.some(function(r){ return r.flag; });
     var trs = rows.map(function(r){
       return '<tr>'
-        + '<td class="pic"><svg class="pictogram" width="38" height="38" aria-hidden="true" focusable="false"><use href="#pic-' + r.pic + '" width="38" height="38"></use></svg></td>'
+        + '<td class="pic"><svg class="pictogram" width="76" height="76" aria-hidden="true" focusable="false"><use href="#pic-' + r.pic + '" width="76" height="76"></use></svg></td>'
         + '<td class="exercise">' + r.name + (r.flag ? ' <span class="flag">&#9873;</span>' : '') + '<div class="muscle-line">' + r.muscle + '</div></td>'
         + '<td class="num">' + r.sets + '</td>'
         + '<td class="num">' + r.reps + '</td>'
