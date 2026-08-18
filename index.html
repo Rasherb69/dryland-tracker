@@ -893,6 +893,16 @@
     var now = new Date(); now.setHours(0,0,0,0);
     return (now - anchorDate) / (7*86400000);
   }
+  function reviewWeeksDue(person){
+    var sessions = personSessions(person);
+    if (sessions.length === 0) return null;
+    if (store.profiles[person].reviewDoneAt) return null;
+    var sorted = sessions.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+    var firstDate = new Date(sorted[0].date + "T00:00:00");
+    var now = new Date(); now.setHours(0,0,0,0);
+    return (now - firstDate) / (7*86400000);
+  }
+
   function needsBackupNudge(){
     if (!store.lastExport) return true;
     var t = new Date(store.lastExport).getTime();
@@ -1162,6 +1172,12 @@
     var deloadHtml = (deloadWeeks != null && deloadWeeks >= 5)
       ? '<div class="nudge warn">Deload week due: ' + Math.floor(deloadWeeks) + ' weeks since your last reset.</div>'
       : "";
+    var reviewWeeks = reviewWeeksDue(person);
+    var reviewHtml = (reviewWeeks != null && reviewWeeks >= 6)
+      ? '<div class="nudge warn"><strong>Six-week review due.</strong> ' + Math.floor(reviewWeeks)
+        + ' weeks since your first logged session. Read the lifts, the rowing and the elbow together, then adjust load, rep ranges or the day split &mdash; see the Plan tab.'
+        + ' <button class="btn ghost" data-action="dismiss-review">Mark review done</button></div>'
+      : "";
     var confirmHtml = "";
     if (ui.saveConfirmation && ui.saveConfirmation.person === person){
       var sc = ui.saveConfirmation;
@@ -1169,6 +1185,7 @@
       confirmHtml = '<div class="msg success"><strong>Session saved.</strong>' + prLines + '</div>';
     }
     return confirmHtml
+      + reviewHtml
       + nudgeHtml
       + '<div class="banner ' + banner.tone + '"><strong>' + esc(banner.text) + '</strong><p>' + esc(banner.detail) + '</p></div>'
       + '<div class="lift-grid">' + cards + '</div>'
@@ -1589,6 +1606,13 @@
     if (action === "save-session"){
       var session = draftToSession(ui.draft);
       persistAndSwitch(session);
+      render();
+      return;
+    }
+
+    if (action === "dismiss-review"){
+      store.profiles[ui.person].reviewDoneAt = todayISO();
+      saveStore();
       render();
       return;
     }
