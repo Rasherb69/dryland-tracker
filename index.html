@@ -352,6 +352,7 @@
   .plan-table td.notes{color:var(--ink-soft);font-size:0.78rem;}
   .plan-table td.coach{color:var(--ink-soft);font-size:0.76rem;line-height:1.5;min-width:280px;max-width:340px;}
   .plan-table td.coach strong{color:var(--ink);font-weight:700;}
+  .build-stamp{opacity:0.65;font-variant-numeric:tabular-nums;}
   .flag{color:var(--buoy);font-weight:700;}
   .legend{font-size:0.76rem;color:var(--ink-soft);padding:0 1rem 0.9rem;}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
@@ -489,6 +490,7 @@
   "use strict";
 
   var STORAGE_KEY = "dryland-tracker-v1";
+  var BUILD = "19 Aug 2026 b";
   var CORRUPT_KEY = "dryland-tracker-v1-corrupt";
   var DAY_ORDER = ["A","B","C"];
 
@@ -1349,7 +1351,7 @@
         ui.view === "plan" ? renderPlan() :
         renderBackup()
       ) + '</main>'
-      + '<footer class="note">Data stays on this device (localStorage). Use Backup to keep a copy.</footer>';
+      + '<footer class="note">Data stays on this device (localStorage). Use Backup to keep a copy.<br><span class="build-stamp">Version ' + BUILD + '</span></footer>';
   }
 
   /* ---------------- mutations ---------------- */
@@ -1707,7 +1709,8 @@
   function initServiceWorker(){
     try {
       if ("serviceWorker" in navigator && /\.github\.io$/.test(location.hostname)){
-        navigator.serviceWorker.register("sw.js");
+        navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+          .then(function(reg){ if (reg && reg.update) reg.update(); });
       }
     } catch (e){ /* offline caching unavailable; app still works online */ }
   }

@@ -1,6 +1,13 @@
-/* Dry-Land Tracker service worker — cache-first with background refresh.
-   Bump CACHE on every deploy so old caches are cleaned up. */
-var CACHE = "dryland-v5";
+/* Dry-Land Tracker service worker.
+   Strategy: NETWORK-FIRST with a short timeout, cache as the offline fallback.
+   Rationale: the offline requirement is "works in the gym with no signal", not
+   "loads in 50ms". Cache-first made deployed changes take several opens to
+   appear, because GitHub Pages serves max-age=600 and the revalidating fetch
+   was answered by the browser's own HTTP cache. Every fetch here uses
+   cache:"no-store" so the network copy is always genuinely fresh.
+   Bump CACHE on every deploy. */
+var CACHE = "dryland-v6";
+var NET_TIMEOUT_MS = 3000;
 var ASSETS = ["./", "index.html", "plan.html", "manifest.webmanifest",
               "icon-180.png", "icon-192.png", "icon-512.png"];
 
@@ -25,16 +32,23 @@ self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   var url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
-  e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then(function (cached) {
-      var network = fetch(e.request).then(function (resp) {
-        if (resp && resp.ok) {
-          var copy = resp.clone();
-          caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
-        }
+
+  e.respondWith(caches.open(CACHE).then(function (cache) {
+    return cache.match(e.request, { ignoreSearch: true }).then(function (cached) {
+      var fromNetwork = fetch(e.request, { cache: "no-store" }).then(function (resp) {
+        if (resp && resp.ok) cache.put(e.request, resp.clone());
         return resp;
-      }).catch(function () { return cached; });
-      return cached || network;
-    })
-  );
+      });
+
+      if (!cached) return fromNetwork;               // nothing to fall back to
+
+      // Serve the network copy, but never make the user wait on a bad signal.
+      return new Promise(function (resolve) {
+        var settled = false;
+        function done(r) { if (!settled && r) { settled = true; resolve(r); } }
+        setTimeout(function () { done(cached); }, NET_TIMEOUT_MS);
+        fromNetwork.then(done, function () { done(cached); });
+      });
+    });
+  }));
 });
