@@ -340,7 +340,7 @@
   .day-focus .tagline{font-size:0.8rem;color:var(--ink-soft);}
 
   .table-wrap{overflow-x:auto;}
-  .plan-table{width:100%;border-collapse:collapse;font-size:0.82rem;min-width:560px;}
+  .plan-table{width:100%;border-collapse:collapse;font-size:0.82rem;min-width:900px;}
   .plan-table th{text-align:left;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);padding:0.6rem 0.8rem 0.4rem;font-weight:700;}
   .plan-table th.pic-col{width:96px;padding:0.6rem 0.3rem 0.4rem 0.8rem;}
   .plan-table td{padding:0.55rem 0.8rem;border-top:1px solid var(--line);vertical-align:top;}
@@ -350,6 +350,8 @@
   .muscle-line{font-family:var(--sans);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);font-weight:600;margin-top:0.2rem;}
   .plan-table td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
   .plan-table td.notes{color:var(--ink-soft);font-size:0.78rem;}
+  .plan-table td.coach{color:var(--ink-soft);font-size:0.76rem;line-height:1.5;min-width:280px;max-width:340px;}
+  .plan-table td.coach strong{color:var(--ink);font-weight:700;}
   .flag{color:var(--buoy);font-weight:700;}
   .legend{font-size:0.76rem;color:var(--ink-soft);padding:0 1rem 0.9rem;}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
@@ -499,7 +501,7 @@
         { id:"row", name:{ lewis:"Barbell Row", andrea:"DB Row (neutral grip)" }, sets:4, repLow:6, repHigh:8, primary:true },
         { id:"rdl", name:"Romanian Deadlift", sets:3, repLow:8, repHigh:8 },
         { id:"ohp", name:"Standing Overhead Press", sets:3, repLow:6, repHigh:8 },
-        { id:"suitcase_carry", name:{ lewis:"Suitcase Carry", andrea:"Suitcase Carry (light, straps)" }, sets:3, repUnit:"note", noteText:"20m/side" },
+        { id:"suitcase_carry", name:{ lewis:"Suitcase Carry", andrea:"Suitcase Carry (light, straps)" }, sets:3, repUnit:"note", noteText:"20m/side", mode:"distance", defaultVal:20 },
         { id:"pallof_press", name:"Pallof Press", sets:2, repLow:10, repHigh:10, noteText:"/side" }
       ]
     },
@@ -512,7 +514,7 @@
         { id:"bulgarian_split_squat", name:"Bulgarian Split Squat (DB)", sets:3, repLow:8, repHigh:8, noteText:"/leg" },
         { id:"cable_row", name:"Seated Cable Row (neutral grip)", sets:3, repLow:10, repHigh:10 },
         { id:"face_pull", name:"Face Pull", sets:3, repLow:15, repHigh:15 },
-        { id:"dead_bug", name:"Dead Bug", sets:3, repUnit:"note", noteText:"30-45 sec" }
+        { id:"dead_bug", name:"Dead Bug", sets:3, repUnit:"note", noteText:"30-45 sec", mode:"time", defaultVal:30 }
       ]
     },
     C: {
@@ -523,8 +525,8 @@
         { id:"pull", name:{ lewis:"Weighted Pull-Up", andrea:"Lat Pulldown (neutral grip)" }, sets:4, repLow:6, repHigh:8 },
         { id:"hip_thrust", name:"Barbell Hip Thrust", sets:3, repLow:8, repHigh:10 },
         { id:"landmine_press", name:"Landmine Press", sets:3, repLow:6, repHigh:8, noteText:"/side" },
-        { id:"farmers_carry", name:{ lewis:"Farmer's Carry", andrea:"Farmer's Carry (straps)" }, sets:3, repUnit:"note", noteText:"30m" },
-        { id:"side_plank", name:"Side Plank", sets:2, repUnit:"note", noteText:"20-30 sec/side" }
+        { id:"farmers_carry", name:{ lewis:"Farmer's Carry", andrea:"Farmer's Carry (straps)" }, sets:3, repUnit:"note", noteText:"30m", mode:"distance", defaultVal:30 },
+        { id:"side_plank", name:"Side Plank", sets:2, repUnit:"note", noteText:"20-30 sec/side", mode:"time", defaultVal:20 }
       ]
     }
   };
@@ -541,28 +543,28 @@
      contain raw HTML entities and are inserted un-escaped by design. */
   var PLAN_ROWS = {
     A: [
-      { pic:"back-squat", name:"Back Squat (barbell)", flag:false, muscle:"Quads &middot; Glutes &middot; Core", sets:"4", reps:"5", rest:"2&ndash;3 min", notes:"RPE 7&ndash;8. Full ramp-up before working sets." },
-      { pic:"barbell-row", name:"Barbell Row", flag:true, muscle:"Upper back &middot; Lats &middot; Biceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"Andrea: neutral-grip dumbbell row instead &mdash; see elbow note below." },
-      { pic:"romanian-deadlift", name:"Romanian Deadlift", flag:false, muscle:"Hamstrings &middot; Glutes &middot; Lower back", sets:"3", reps:"8", rest:"90 sec", notes:"Hip hinge &mdash; direct carryover to the catch and drive." },
-      { pic:"overhead-press", name:"Standing Overhead Press", flag:false, muscle:"Shoulders &middot; Triceps &middot; Core", sets:"3", reps:"6&ndash;8", rest:"90 sec", notes:"Barbell or dumbbell &mdash; whichever grip feels cleanest on the shoulder." },
-      { pic:"suitcase-carry", name:"Suitcase Carry", flag:true, muscle:"Obliques &middot; Grip &middot; Traps", sets:"3", reps:"20m/side", rest:"90 sec", notes:"Andrea: light load, straps allowed, stop if the elbow flares." },
-      { pic:"pallof-press", name:"Pallof Press", flag:false, muscle:"Core (anti-rotation)", sets:"2", reps:"10/side", rest:"60 sec", notes:"Slow and controlled &mdash; resist the rotation, don&#39;t rush it." }
+      { pic:"back-squat", name:"Back Squat (barbell)", flag:false, muscle:"Quads &middot; Glutes &middot; Core", sets:"4", reps:"5", rest:"2&ndash;3 min", notes:"RPE 7&ndash;8. Full ramp-up before working sets.", coach:"<strong>Muscles:</strong> Quads, glutes, adductors and the whole trunk.<br><strong>Why:</strong> The biggest single driver of leg drive. Rowing power starts at the legs, so a stronger squat raises the ceiling on every stroke.<br><strong>How:</strong> Brace hard before you descend, hips and knees bending together, bar tracking over mid-foot. Go to at least parallel and drive the floor away rather than rushing out of the bottom." },
+      { pic:"barbell-row", name:"Barbell Row", flag:true, muscle:"Upper back &middot; Lats &middot; Biceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"Andrea: neutral-grip dumbbell row instead &mdash; see elbow note below.", coach:"<strong>Muscles:</strong> Lats, rhomboids, mid-traps, rear delts, biceps.<br><strong>Why:</strong> The horizontal pull that most closely mirrors the stroke, and the balance to all the pressing. It builds the back that holds your posture at the catch.<br><strong>How:</strong> Hinge to about 45 degrees, brace, and pull to the lower ribs with the elbows close to the body. Pause for a beat, lower under control, and never heave with the lower back." },
+      { pic:"romanian-deadlift", name:"Romanian Deadlift", flag:false, muscle:"Hamstrings &middot; Glutes &middot; Lower back", sets:"3", reps:"8", rest:"90 sec", notes:"Hip hinge &mdash; direct carryover to the catch and drive.", coach:"<strong>Muscles:</strong> Hamstrings, glutes, lower back, grip.<br><strong>Why:</strong> Trains the hip hinge under load. That hinge is the drive phase, and it is the strongest protection you have for the lower back.<br><strong>How:</strong> Soft knees, push the hips back, bar grazing the legs the whole way. Stop when the hamstrings tighten, not when the back starts to round." },
+      { pic:"overhead-press", name:"Standing Overhead Press", flag:false, muscle:"Shoulders &middot; Triceps &middot; Core", sets:"3", reps:"6&ndash;8", rest:"90 sec", notes:"Barbell or dumbbell &mdash; whichever grip feels cleanest on the shoulder.", coach:"<strong>Muscles:</strong> Shoulders, triceps, upper chest, core.<br><strong>Why:</strong> Keeps the shoulder strong through a full overhead range, which pulling-heavy sports quietly erode over time.<br><strong>How:</strong> Squeeze the glutes, keep the ribs down, and press slightly back so the bar finishes over mid-foot. Do not lean away from the bar." },
+      { pic:"suitcase-carry", name:"Suitcase Carry", flag:true, muscle:"Obliques &middot; Grip &middot; Traps", sets:"3", reps:"20m/side", rest:"90 sec", notes:"Andrea: light load, straps allowed, stop if the elbow flares.", coach:"<strong>Muscles:</strong> Obliques, deep trunk, grip, traps.<br><strong>Why:</strong> Anti-lateral-flexion. A boat loads you unevenly, and this teaches the trunk to resist tipping under a one-sided load.<br><strong>How:</strong> One weight only, stand tall, walk slowly and deliberately. Do not lean away from the load; the work is in staying square." },
+      { pic:"pallof-press", name:"Pallof Press", flag:false, muscle:"Core (anti-rotation)", sets:"2", reps:"10/side", rest:"60 sec", notes:"Slow and controlled &mdash; resist the rotation, don&#39;t rush it.", coach:"<strong>Muscles:</strong> Deep core, anti-rotation.<br><strong>Why:</strong> Teaches the trunk to transfer leg drive into the handle without leaking energy through rotation.<br><strong>How:</strong> Stand side-on to the cable and press straight out slowly, resisting the pull. Light load, controlled tempo, no rushing." }
     ],
     B: [
-      { pic:"deadlift", name:"Conventional Deadlift", flag:false, muscle:"Hamstrings &middot; Glutes &middot; Back", sets:"4", reps:"5", rest:"2&ndash;3 min", notes:"RPE 7&ndash;8." },
-      { pic:"incline-press", name:"Incline Dumbbell Press", flag:false, muscle:"Chest &middot; Shoulders &middot; Triceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"&nbsp;" },
-      { pic:"bulgarian-split-squat", name:"Bulgarian Split Squat (DB)", flag:false, muscle:"Quads &middot; Glutes &middot; Balance", sets:"3", reps:"8/leg", rest:"90 sec", notes:"Rear foot elevated &mdash; single-leg stability for the boat." },
-      { pic:"cable-row", name:"Seated Cable Row, neutral grip", flag:true, muscle:"Mid-back &middot; Lats &middot; Biceps", sets:"3", reps:"10", rest:"90 sec", notes:"Close-grip neutral handle &mdash; easiest on the elbow, closest to the stroke." },
-      { pic:"face-pull", name:"Face Pull", flag:false, muscle:"Rear delts &middot; Rotator cuff", sets:"3", reps:"15", rest:"60 sec", notes:"Light&ndash;moderate. Shoulder health, elbow-friendly." },
-      { pic:"dead-bug", name:"Dead Bug", flag:false, muscle:"Deep core", sets:"3", reps:"30&ndash;45 sec", rest:"45 sec", notes:"&nbsp;" }
+      { pic:"deadlift", name:"Conventional Deadlift", flag:false, muscle:"Hamstrings &middot; Glutes &middot; Back", sets:"4", reps:"5", rest:"2&ndash;3 min", notes:"RPE 7&ndash;8.", coach:"<strong>Muscles:</strong> Glutes, hamstrings, whole back, grip.<br><strong>Why:</strong> The heaviest expression of the hinge, and the raw pulling strength that underwrites everything else in the programme.<br><strong>How:</strong> Bar over mid-foot, take the slack out of the bar before you pull, then push the floor away. Finish tall without leaning back at the top." },
+      { pic:"incline-press", name:"Incline Dumbbell Press", flag:false, muscle:"Chest &middot; Shoulders &middot; Triceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"&nbsp;", coach:"<strong>Muscles:</strong> Upper chest, front delts, triceps.<br><strong>Why:</strong> Balances the heavy pulling volume so the shoulders stay healthy and even.<br><strong>How:</strong> Bench at 30 to 35 degrees, elbows about 45 degrees from the body. Control the descent and press without clashing the dumbbells together." },
+      { pic:"bulgarian-split-squat", name:"Bulgarian Split Squat (DB)", flag:false, muscle:"Quads &middot; Glutes &middot; Balance", sets:"3", reps:"8/leg", rest:"90 sec", notes:"Rear foot elevated &mdash; single-leg stability for the boat.", coach:"<strong>Muscles:</strong> Quads, glutes, adductors, balance.<br><strong>Why:</strong> Single-leg strength and hip stability. Each leg has to do its own work, which is closer to how you actually move in the boat.<br><strong>How:</strong> Rear foot on the bench, weight through the front heel, torso tall. Descend under control and drive up through the front leg." },
+      { pic:"cable-row", name:"Seated Cable Row, neutral grip", flag:true, muscle:"Mid-back &middot; Lats &middot; Biceps", sets:"3", reps:"10", rest:"90 sec", notes:"Close-grip neutral handle &mdash; easiest on the elbow, closest to the stroke.", coach:"<strong>Muscles:</strong> Mid-back, lats, biceps, rear delts.<br><strong>Why:</strong> The closest gym match to the stroke itself, with a neutral grip that spares the elbow.<br><strong>How:</strong> Sit tall, drive the elbows back, squeeze the shoulder blades at the end of the pull. Do not rock the torso to move the weight." },
+      { pic:"face-pull", name:"Face Pull", flag:false, muscle:"Rear delts &middot; Rotator cuff", sets:"3", reps:"15", rest:"60 sec", notes:"Light&ndash;moderate. Shoulder health, elbow-friendly.", coach:"<strong>Muscles:</strong> Rear delts, rotator cuff, mid-traps.<br><strong>Why:</strong> The shoulder-health exercise. It keeps the joint balanced against everything else you are doing.<br><strong>How:</strong> Cable level with your face, pull towards the forehead with elbows high and wide. Light weight, slow tempo, higher reps." },
+      { pic:"dead-bug", name:"Dead Bug", flag:false, muscle:"Deep core", sets:"3", reps:"30&ndash;45 sec", rest:"45 sec", notes:"&nbsp;", coach:"<strong>Muscles:</strong> Deep core, the muscles that hold the spine still.<br><strong>Why:</strong> Teaches the trunk to stay braced while the arms and legs move, which is exactly its job in the boat.<br><strong>How:</strong> Press the lower back flat into the floor and keep it there. Extend opposite arm and leg slowly, breathing throughout. End the hold the moment the back lifts." }
     ],
     C: [
-      { pic:"front-squat", name:"Front Squat or Leg Press", flag:false, muscle:"Quads &middot; Upper back &middot; Core", sets:"4", reps:"6", rest:"2&ndash;3 min", notes:"Swap to leg press on days the knees or back want a break." },
-      { pic:"pull-up", name:"Weighted Pull-Up / Lat Pulldown", flag:true, muscle:"Lats &middot; Biceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"Andrea: pulldown, neutral or false-grip attachment." },
-      { pic:"hip-thrust", name:"Barbell Hip Thrust", flag:false, muscle:"Glutes &middot; Hamstrings", sets:"3", reps:"8&ndash;10", rest:"90 sec", notes:"Glute drive &mdash; the power half of the catch." },
-      { pic:"landmine-press", name:"Landmine Press", flag:false, muscle:"Shoulders &middot; Chest &middot; Core", sets:"3", reps:"6&ndash;8/side", rest:"90 sec", notes:"Easier on the shoulder than a straight overhead press." },
-      { pic:"farmers-carry", name:"Farmer&#39;s Carry", flag:true, muscle:"Grip &middot; Traps &middot; Core", sets:"3", reps:"30m", rest:"90 sec", notes:"Andrea: straps or trap-bar handles, moderate load only." },
-      { pic:"side-plank", name:"Side Plank", flag:false, muscle:"Obliques", sets:"2", reps:"20&ndash;30 sec/side", rest:"45 sec", notes:"&nbsp;" }
+      { pic:"front-squat", name:"Front Squat or Leg Press", flag:false, muscle:"Quads &middot; Upper back &middot; Core", sets:"4", reps:"6", rest:"2&ndash;3 min", notes:"Swap to leg press on days the knees or back want a break.", coach:"<strong>Muscles:</strong> Quads, upper back, core.<br><strong>Why:</strong> A quad-dominant squat that forces an upright torso and trains the trunk to stay tall under load.<br><strong>How:</strong> Elbows high, bar resting on the shoulders rather than gripped in the hands. Descend between the knees and keep the chest up." },
+      { pic:"pull-up", name:"Weighted Pull-Up / Lat Pulldown", flag:true, muscle:"Lats &middot; Biceps", sets:"4", reps:"6&ndash;8", rest:"2 min", notes:"Andrea: pulldown, neutral or false-grip attachment.", coach:"<strong>Muscles:</strong> Lats, biceps, mid-back.<br><strong>Why:</strong> The vertical pull, and the other half of a balanced back.<br><strong>How:</strong> Start from a full hang, pull the chest towards the bar, control the way down. Add weight only once the reps are clean." },
+      { pic:"hip-thrust", name:"Barbell Hip Thrust", flag:false, muscle:"Glutes &middot; Hamstrings", sets:"3", reps:"8&ndash;10", rest:"90 sec", notes:"Glute drive &mdash; the power half of the catch.", coach:"<strong>Muscles:</strong> Glutes, hamstrings.<br><strong>Why:</strong> Direct glute power, and the glutes are what finish the drive.<br><strong>How:</strong> Shoulders on the bench, chin tucked, drive through the heels to a straight line from knee to shoulder. Squeeze hard at the top without arching the lower back." },
+      { pic:"landmine-press", name:"Landmine Press", flag:false, muscle:"Shoulders &middot; Chest &middot; Core", sets:"3", reps:"6&ndash;8/side", rest:"90 sec", notes:"Easier on the shoulder than a straight overhead press.", coach:"<strong>Muscles:</strong> Shoulders, upper chest, core.<br><strong>Why:</strong> An angled press that loads the shoulder through a friendlier arc than a straight overhead press.<br><strong>How:</strong> Brace the trunk and press up and forward in one line. Keep hips and shoulders square; do not twist into the press." },
+      { pic:"farmers-carry", name:"Farmer&#39;s Carry", flag:true, muscle:"Grip &middot; Traps &middot; Core", sets:"3", reps:"30m", rest:"90 sec", notes:"Andrea: straps or trap-bar handles, moderate load only.", coach:"<strong>Muscles:</strong> Grip, traps, core, and everything that holds posture.<br><strong>Why:</strong> Builds grip and trunk strength under real load. Grip is often the first thing to limit rowing volume.<br><strong>How:</strong> Heavy but controlled, stand tall, short quick steps, breathe. Set the weights down before your form collapses, not after." },
+      { pic:"side-plank", name:"Side Plank", flag:false, muscle:"Obliques", sets:"2", reps:"20&ndash;30 sec/side", rest:"45 sec", notes:"&nbsp;", coach:"<strong>Muscles:</strong> Obliques, deep trunk, glute medius.<br><strong>Why:</strong> Lateral stability, the quiet stabiliser that an unevenly loaded sport depends on.<br><strong>How:</strong> Elbow under the shoulder, body in one straight line, hips lifted. Do not sag or rotate; hold and breathe steadily." }
     ]
   };
 
@@ -666,9 +668,11 @@
     }
     return null;
   }
+  function exMode(ex){ return (ex && ex.mode) || "weight"; }
   function defaultSets(ex){
     var out = [];
-    for (var i=0;i<ex.sets;i++){ out.push({ weight:0, reps: ex.repLow || 0 }); }
+    var val = (exMode(ex) === "weight") ? (ex.repLow || 0) : (ex.defaultVal || 0);
+    for (var i=0;i<ex.sets;i++){ out.push({ weight:0, reps: val }); }
     return out;
   }
   function buildDraftForDay(person, day, date){
@@ -783,6 +787,11 @@
     if (targetIndex === -1) return [];
     var prs = [];
     targetSession.entries.forEach(function(entry){
+      /* Mode guard: "reps" means seconds for holds and metres for carries, so the
+         e1RM formula is meaningless there. Holds carry no external load at all. */
+      var foundMeta = findExerciseMetaAnyDay(entry.exercise);
+      var entryMode = foundMeta ? exMode(foundMeta.ex) : "weight";
+      if (entryMode === "time") return;
       var priorWeights = [], priorE1s = [];
       list.forEach(function(s, idx){
         if (s.id === targetSession.id) return;
@@ -806,7 +815,7 @@
       });
       if (bestWeight <= 0) return;
       var isWeightPR = priorWeights.length > 0 && bestWeight > Math.max.apply(null, priorWeights);
-      var isE1rmPR = priorE1s.length > 0 && bestE1 > Math.max.apply(null, priorE1s);
+      var isE1rmPR = entryMode === "weight" && priorE1s.length > 0 && bestE1 > Math.max.apply(null, priorE1s);
       if (isWeightPR || isE1rmPR){
         prs.push({ exercise: entry.exercise, weight: bestWeight, reps: bestReps, e1rm: bestE1, isWeightPR: isWeightPR, isE1rmPR: isE1rmPR });
       }
@@ -962,22 +971,32 @@
       + '</div>';
   }
 
-  function renderSetRow(itemIdx, setIdx, set, unitLabel){
-    return '<div class="set-row">'
+  function renderSetRow(itemIdx, setIdx, set, ex){
+    var mode = exMode(ex);
+    var da = ' data-item="' + itemIdx + '" data-set="' + setIdx + '"';
+    var weightPart = "";
+    if (mode !== "time"){
+      weightPart = '<div class="stepper">'
+        + '<button type="button" data-action="dec-weight"' + da + ' aria-label="Decrease weight">-</button>'
+        + '<input class="num-input" inputmode="decimal" type="text" data-field="weight"' + da + ' value="' + set.weight + '">'
+        + '<button type="button" data-action="inc-weight"' + da + ' aria-label="Increase weight">+</button>'
+        + '<span class="unit">kg</span>'
+        + '</div>';
+    }
+    var unit = mode === "time" ? "sec" : (mode === "distance" ? "m" : "reps");
+    var step = (mode === "time" || mode === "distance") ? 5 : 1;
+    var lbl = mode === "time" ? "hold" : (mode === "distance" ? "distance" : "reps");
+    var valuePart = '<div class="stepper">'
+      + '<button type="button" data-action="dec-reps" data-step="' + step + '"' + da + ' aria-label="Decrease ' + lbl + '">-</button>'
+      + '<input class="num-input" inputmode="numeric" type="text" data-field="reps"' + da + ' value="' + set.reps + '">'
+      + '<button type="button" data-action="inc-reps" data-step="' + step + '"' + da + ' aria-label="Increase ' + lbl + '">+</button>'
+      + '<span class="unit">' + unit + '</span>'
+      + '</div>';
+    return '<div class="set-row' + (mode === "time" ? " bodyweight" : "") + '">'
       + '<span class="set-num">Set ' + (setIdx+1) + '</span>'
-      + '<div class="stepper">'
-      + '<button type="button" data-action="dec-weight" data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Decrease weight">-</button>'
-      + '<input class="num-input" inputmode="decimal" type="text" data-field="weight" data-item="' + itemIdx + '" data-set="' + setIdx + '" value="' + set.weight + '">'
-      + '<button type="button" data-action="inc-weight" data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Increase weight">+</button>'
-      + '<span class="unit">kg</span>'
-      + '</div>'
-      + '<div class="stepper">'
-      + '<button type="button" data-action="dec-reps" data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Decrease reps">-</button>'
-      + '<input class="num-input" inputmode="numeric" type="text" data-field="reps" data-item="' + itemIdx + '" data-set="' + setIdx + '" value="' + set.reps + '">'
-      + '<button type="button" data-action="inc-reps" data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Increase reps">+</button>'
-      + '<span class="unit">' + unitLabel + '</span>'
-      + '</div>'
-      + '<button type="button" class="icon-btn" data-action="remove-set" data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Remove set">&times;</button>'
+      + weightPart
+      + valuePart
+      + '<button type="button" class="icon-btn" data-action="remove-set"' + da + ' aria-label="Remove set">&times;</button>'
       + '</div>';
   }
 
@@ -986,11 +1005,11 @@
     var it = draft.items[itemIdx];
     var ex = getExerciseMeta(draft.day, it.exerciseId);
     var name = exName(ex, ui.person);
-    var unitLabel = ex.repUnit === "note" ? "reps" : "reps";
+    var mode = exMode(ex);
     var body = "";
     if (!it.skipped){
-      body = it.sets.map(function(s, si){ return renderSetRow(itemIdx, si, s, unitLabel); }).join("")
-        + '<button type="button" class="btn ghost" data-action="add-set" data-item="' + itemIdx + '">+ Add set</button>';
+      body = it.sets.map(function(s, si){ return renderSetRow(itemIdx, si, s, ex); }).join("")
+        + '<button type="button" class="btn ghost" data-action="add-set" data-item="' + itemIdx + '">+ Add ' + (mode === "time" ? "hold" : "set") + '</button>';
     } else {
       body = '<p class="soft small">Skipped for this session.</p>';
     }
@@ -1207,11 +1226,12 @@
         + '<td class="num">' + r.reps + '</td>'
         + '<td class="num">' + r.rest + '</td>'
         + '<td class="notes">' + r.notes + '</td>'
+        + '<td class="coach">' + r.coach + '</td>'
         + '</tr>';
     }).join("");
     return '<div class="day-card">'
       + '<div class="day-head"><div class="day-letter">' + day + '</div><div class="day-focus"><div class="name">' + esc(info.label) + '</div><div class="tagline">' + esc(info.tagline) + '</div></div></div>'
-      + '<div class="table-wrap"><table class="plan-table"><thead><tr><th class="pic-col"><span class="sr-only">Move</span></th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th><th>Notes</th></tr></thead><tbody>' + trs + '</tbody></table></div>'
+      + '<div class="table-wrap"><table class="plan-table"><thead><tr><th class="pic-col"><span class="sr-only">Move</span></th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th><th>Notes</th><th>Muscles, why &amp; how</th></tr></thead><tbody>' + trs + '</tbody></table></div>'
       + (hasFlag ? '<div class="legend"><span class="flag">&#9873;</span> modified for Andrea&#39;s elbow &mdash; see the callout under <em>Andrea&#39;s elbow</em>.</div>' : '')
       + '</div>';
   }
@@ -1538,7 +1558,8 @@
     if (action === "inc-reps" || action === "dec-reps"){
       var it5 = findItem(Number(btn.dataset.item));
       var s5 = it5.sets[Number(btn.dataset.set)];
-      var d5 = action === "inc-reps" ? 1 : -1;
+      var stepSize = Number(btn.dataset.step) || 1;
+      var d5 = (action === "inc-reps" ? 1 : -1) * stepSize;
       s5.reps = clamp(s5.reps + d5, 0);
       render();
       return;

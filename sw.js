@@ -1,6 +1,6 @@
 /* Dry-Land Tracker service worker — cache-first with background refresh.
    Bump CACHE on every deploy so old caches are cleaned up. */
-var CACHE = "dryland-v4";
+var CACHE = "dryland-v5";
 var ASSETS = ["./", "index.html", "plan.html", "manifest.webmanifest",
               "icon-180.png", "icon-192.png", "icon-512.png"];
 
