@@ -182,10 +182,13 @@
     background:var(--surface-soft);
     color:var(--ink);
     font-family:var(--sans);
-    font-size:0.95rem;
+    font-size:16px;
     padding:0 0.6rem;
   }
-  textarea{min-height:70px;padding:0.5rem 0.6rem;resize:vertical;font-family:var(--sans);width:100%;}
+  textarea{min-height:70px;padding:0.5rem 0.6rem;resize:vertical;font-family:var(--sans);font-size:16px;width:100%;}
+  /* iOS Safari zooms the whole page when a control under 16px takes focus.
+     This backstop keeps every focusable control at or above that threshold. */
+  input,select,textarea{font-size:16px;}
 
   /* ---- Exercise editor ---- */
   .exercise-card{
@@ -230,6 +233,116 @@
   }
   .checkbox-row{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;}
   .checkbox-row input{width:20px;height:20px;}
+
+  /* ---- Exercise illustration, rest and coaching (added 24 Aug 2026) ---- */
+  .ex-pic{
+    display:block;flex:0 0 auto;
+    border-radius:8px;border:1px solid var(--line);background:#fff;
+  }
+  .exercise-head .titles{flex:1 1 auto;min-width:0;}
+  .exercise-rest{font-size:0.76rem;color:var(--teal-soft);font-weight:600;}
+  .coach-toggle{
+    align-self:flex-start;
+    min-height:36px;padding:0 0.7rem;
+    border-radius:999px;border:1px solid var(--line);
+    background:var(--surface-soft);color:var(--ink-soft);
+    font-family:var(--sans);font-size:0.78rem;font-weight:600;cursor:pointer;
+  }
+  .coach-toggle.open{color:var(--teal);border-color:var(--teal-soft);}
+  .coach-panel{
+    background:var(--surface-soft);
+    border:1px solid var(--line);border-radius:8px;
+    padding:0.65rem 0.75rem;
+    font-size:0.84rem;line-height:1.55;color:var(--ink);
+  }
+  .coach-panel strong{color:var(--teal);}
+
+  /* ---- Tap-to-spin value chips (replaced the +/- steppers) ---- */
+  .val-chip{
+    display:inline-flex;align-items:baseline;gap:0.25rem;
+    min-height:48px;min-width:5.2rem;padding:0 0.7rem;
+    justify-content:center;
+    border-radius:10px;border:1px solid var(--line);
+    background:var(--surface-soft);color:var(--ink);
+    font-family:var(--mono);font-size:1.05rem;font-weight:700;
+    font-variant-numeric:tabular-nums;
+    cursor:pointer;
+  }
+  .val-chip .unit{font-family:var(--sans);font-weight:400;}
+  .val-chip:active{border-color:var(--teal-soft);}
+
+  /* ---- Rest timer ---- */
+  .rest-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+  .dur-chip{
+    min-height:44px;padding:0 0.8rem;
+    border-radius:10px;border:1px solid var(--line);
+    background:var(--surface-soft);color:var(--ink);
+    font-family:var(--mono);font-size:0.95rem;font-weight:700;cursor:pointer;
+    font-variant-numeric:tabular-nums;
+  }
+  .rest-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    display:none;align-items:center;gap:0.6rem;
+    padding:0.7rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom));
+    background:#14524C;color:#fff;
+    box-shadow:0 -6px 20px rgba(0,0,0,0.22);
+  }
+  .rest-bar.on{display:flex;}
+  .rest-bar.done{background:#A8431F;}
+  .rest-bar .rest-what{font-size:0.74rem;opacity:0.85;flex:1 1 auto;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rest-bar .rest-clock{
+    font-family:var(--mono);font-size:1.5rem;font-weight:700;
+    font-variant-numeric:tabular-nums;flex:0 0 auto;
+  }
+  .rest-bar button{
+    min-height:42px;padding:0 0.7rem;flex:0 0 auto;
+    border-radius:8px;border:1px solid rgba(255,255,255,0.5);
+    background:rgba(255,255,255,0.12);color:#fff;
+    font-family:var(--sans);font-size:0.85rem;font-weight:700;cursor:pointer;
+  }
+  body.rest-active .page{padding-bottom:7.5rem;}
+
+  /* ---- Wheel picker sheet ---- */
+  .wheel-backdrop{
+    position:fixed;inset:0;z-index:60;
+    background:rgba(10,20,18,0.45);
+    display:flex;align-items:flex-end;justify-content:center;
+  }
+  .wheel-sheet{
+    width:100%;max-width:640px;
+    background:var(--surface);
+    border-radius:16px 16px 0 0;
+    border-top:1px solid var(--line);
+    padding:0.9rem 0.9rem calc(0.9rem + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;gap:0.7rem;
+  }
+  .wheel-title{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);text-align:center;}
+  .wheel-wrap{position:relative;height:230px;}
+  .wheel-band{
+    position:absolute;left:0;right:0;top:92px;height:46px;
+    border-top:1px solid var(--teal-soft);border-bottom:1px solid var(--teal-soft);
+    background:var(--surface-soft);
+    border-radius:8px;pointer-events:none;
+  }
+  .wheel-scroll{
+    position:relative;height:230px;overflow-y:auto;
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:92px 0;
+    scrollbar-width:none;
+  }
+  .wheel-scroll::-webkit-scrollbar{display:none;}
+  .wheel-opt{
+    height:46px;line-height:46px;
+    scroll-snap-align:center;
+    text-align:center;
+    font-family:var(--mono);font-size:1.15rem;font-weight:700;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);cursor:pointer;
+  }
+  .wheel-actions{display:flex;gap:0.6rem;}
+  .wheel-actions .btn{flex:1;}
 
   /* ---- History ---- */
   .history-item{
@@ -490,8 +603,9 @@
   "use strict";
 
   var STORAGE_KEY = "dryland-tracker-v1";
-  var BUILD = "19 Aug 2026 c";
+  var BUILD = "24 Aug 2026 a";
   var CORRUPT_KEY = "dryland-tracker-v1-corrupt";
+  var DRAFT_KEY = "dryland-tracker-v1-draft";
   var DAY_ORDER = ["A","B","C"];
 
   var CATALOGUE = {
@@ -635,7 +749,11 @@
     exportMessage: null,
     exportFallback: null,
     importMessage: null,
-    saveConfirmation: null
+    saveConfirmation: null,
+    openCoach: {},
+    restChoice: {},
+    draftSavedAt: null,
+    resumed: false
   };
 
   /* ---------------- helpers ---------------- */
@@ -657,6 +775,76 @@
   function clamp(v, min){ return v < min ? min : v; }
   function roundHalf(v){ return Math.round(v*2)/2; }
   function e1rm(weight, reps){ return weight * (1 + reps/30); }
+
+  /* Plan row for an exercise. PLAN_ROWS[day] is written in the same order as
+     CATALOGUE[day].exercises, so they pair by index. */
+  var PLAN_BY_EX = (function(){
+    var map = {};
+    DAY_ORDER.forEach(function(d){
+      var exs = CATALOGUE[d].exercises, rows = PLAN_ROWS[d];
+      for (var i=0;i<exs.length && i<rows.length;i++){ map[exs[i].id] = rows[i]; }
+    });
+    return map;
+  })();
+  function planRow(exId){ return PLAN_BY_EX[exId] || null; }
+  function planRestText(exId){
+    var r = planRow(exId);
+    return r && r.rest ? r.rest : "";
+  }
+  /* Turn the plan's rest column ("2&ndash;3 min", "90 sec") into seconds.
+     A range takes its midpoint. */
+  function planRestSeconds(exId){
+    var r = planRow(exId);
+    if (!r || !r.rest) return 120;
+    var t = r.rest.replace(/&ndash;|&mdash;/g, "-").replace(/&nbsp;/g, " ");
+    var nums = t.match(/[0-9]+(\.[0-9]+)?/g);
+    if (!nums) return 120;
+    var mult = /min/.test(t) ? 60 : 1;
+    var total = 0;
+    for (var i=0;i<nums.length;i++) total += parseFloat(nums[i]) * mult;
+    return Math.round(total / nums.length);
+  }
+  function fmtClock(sec){
+    if (sec < 0) sec = 0;
+    var m = Math.floor(sec/60);
+    return m + ":" + pad2(sec % 60);
+  }
+
+  /* ---------------- draft autosave ----------------
+     The in-progress session is written to its own localStorage key on every
+     change, so closing the app mid-session loses nothing. Cleared the moment
+     the session is saved into the log or discarded. */
+  function saveDraft(){
+    try{
+      if (ui.draft){
+        ui.draftSavedAt = new Date();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          person: ui.person,
+          savedAt: ui.draftSavedAt.toISOString(),
+          draft: ui.draft
+        }));
+      } else {
+        ui.draftSavedAt = null;
+        localStorage.removeItem(DRAFT_KEY);
+      }
+    } catch(e){ /* storage unavailable */ }
+  }
+  function loadSavedDraft(){
+    var raw;
+    try { raw = localStorage.getItem(DRAFT_KEY); } catch(e){ return null; }
+    if (!raw) return null;
+    try{
+      var p = JSON.parse(raw);
+      if (!p || !p.draft) return null;
+      var d = p.draft;
+      if (!d.day || !CATALOGUE[d.day] || !Array.isArray(d.items)) return null;
+      if (p.person !== "lewis" && p.person !== "andrea") return null;
+      for (var i=0;i<d.items.length;i++){
+        if (!d.items[i] || !Array.isArray(d.items[i].sets)) return null;
+      }
+      return p;
+    } catch(e){ return null; }
+  }
 
   function personSessions(person){ return store.profiles[person].sessions; }
 
@@ -973,32 +1161,27 @@
       + '</div>';
   }
 
+  /* Values are set by spinning a wheel, not by typing: no keyboard, so no
+     page zoom, and no fiddly text entry with cold hands. */
+  function valueChip(itemIdx, setIdx, field, value, unit, label){
+    return '<button type="button" class="val-chip" data-action="open-wheel"'
+      + ' data-item="' + itemIdx + '" data-set="' + setIdx + '" data-field="' + field + '"'
+      + ' aria-label="' + esc(label) + ', currently ' + value + ' ' + unit + '">'
+      + value + '<span class="unit">' + unit + '</span></button>';
+  }
   function renderSetRow(itemIdx, setIdx, set, ex){
     var mode = exMode(ex);
-    var da = ' data-item="' + itemIdx + '" data-set="' + setIdx + '"';
-    var weightPart = "";
-    if (mode !== "time"){
-      weightPart = '<div class="stepper">'
-        + '<button type="button" data-action="dec-weight"' + da + ' aria-label="Decrease weight">-</button>'
-        + '<input class="num-input" inputmode="decimal" type="text" data-field="weight"' + da + ' value="' + set.weight + '">'
-        + '<button type="button" data-action="inc-weight"' + da + ' aria-label="Increase weight">+</button>'
-        + '<span class="unit">kg</span>'
-        + '</div>';
-    }
+    var weightPart = (mode === "time") ? ""
+      : valueChip(itemIdx, setIdx, "weight", set.weight, "kg", "Weight");
     var unit = mode === "time" ? "sec" : (mode === "distance" ? "m" : "reps");
-    var step = (mode === "time" || mode === "distance") ? 5 : 1;
-    var lbl = mode === "time" ? "hold" : (mode === "distance" ? "distance" : "reps");
-    var valuePart = '<div class="stepper">'
-      + '<button type="button" data-action="dec-reps" data-step="' + step + '"' + da + ' aria-label="Decrease ' + lbl + '">-</button>'
-      + '<input class="num-input" inputmode="numeric" type="text" data-field="reps"' + da + ' value="' + set.reps + '">'
-      + '<button type="button" data-action="inc-reps" data-step="' + step + '"' + da + ' aria-label="Increase ' + lbl + '">+</button>'
-      + '<span class="unit">' + unit + '</span>'
-      + '</div>';
+    var lbl = mode === "time" ? "Hold" : (mode === "distance" ? "Distance" : "Reps");
+    var valuePart = valueChip(itemIdx, setIdx, "reps", set.reps, unit, lbl);
     return '<div class="set-row' + (mode === "time" ? " bodyweight" : "") + '">'
       + '<span class="set-num">Set ' + (setIdx+1) + '</span>'
       + weightPart
       + valuePart
-      + '<button type="button" class="icon-btn" data-action="remove-set"' + da + ' aria-label="Remove set">&times;</button>'
+      + '<button type="button" class="icon-btn" data-action="remove-set"'
+      + ' data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Remove set">&times;</button>'
       + '</div>';
   }
 
@@ -1015,12 +1198,38 @@
     } else {
       body = '<p class="soft small">Skipped for this session.</p>';
     }
+    var row = planRow(it.exerciseId);
+    var pic = row
+      ? '<svg class="ex-pic" width="64" height="64" aria-hidden="true" focusable="false">'
+        + '<use href="#pic-' + row.pic + '" width="64" height="64"></use></svg>'
+      : "";
+    var restLine = row ? '<span class="exercise-rest">Rest ' + row.rest + '</span>' : "";
+    var coachOpen = !!ui.openCoach[it.exerciseId];
+    var coachBlock = "";
+    if (row && !it.skipped){
+      coachBlock = '<button type="button" class="coach-toggle' + (coachOpen?" open":"") + '"'
+        + ' data-action="toggle-coach" data-ex="' + it.exerciseId + '" aria-expanded="' + coachOpen + '">'
+        + (coachOpen ? "Hide why &amp; how" : "Why &amp; how") + '</button>'
+        + (coachOpen ? '<div class="coach-panel">' + row.coach + '</div>' : "");
+    }
+    var restBlock = "";
+    if (!it.skipped){
+      var chosen = restSecondsFor(it.exerciseId);
+      restBlock = '<div class="rest-row">'
+        + '<button type="button" class="dur-chip" data-action="open-rest-wheel" data-ex="' + it.exerciseId + '"'
+        + ' aria-label="Rest length, currently ' + fmtClock(chosen) + '">' + fmtClock(chosen) + '</button>'
+        + '<button type="button" class="btn ghost" data-action="start-rest" data-ex="' + it.exerciseId + '">Start rest</button>'
+        + '</div>';
+    }
     return '<div class="exercise-card ' + (it.skipped?"skipped":"") + '">'
       + '<div class="exercise-head">'
-      + '<div class="titles"><h3>' + esc(name) + '</h3><span class="exercise-meta">' + esc(exerciseMetaLine(ex)) + '</span></div>'
+      + pic
+      + '<div class="titles"><h3>' + esc(name) + '</h3><span class="exercise-meta">' + esc(exerciseMetaLine(ex)) + '</span>' + restLine + '</div>'
       + '<button type="button" class="btn ghost" data-action="toggle-skip" data-item="' + itemIdx + '">' + (it.skipped?"Unskip":"Skip") + '</button>'
       + '</div>'
+      + coachBlock
       + body
+      + restBlock
       + '</div>';
   }
 
@@ -1030,6 +1239,16 @@
       return '<button type="button" class="feel-btn ' + (feel===o[0]?"active":"") + '" data-action="set-feel" data-feel="' + o[0] + '">' + o[1] + '</button>';
     }).join("");
     return '<p class="soft small">How did this session feel? (optional)</p><div class="feel-row">' + btns + '</div>';
+  }
+
+  function autoSaveLine(){
+    if (!ui.draftSavedAt) return "";
+    var t = pad2(ui.draftSavedAt.getHours()) + ":" + pad2(ui.draftSavedAt.getMinutes());
+    var lead = ui.resumed
+      ? "Picked up where you left off. "
+      : "";
+    return '<p class="soft small">' + lead + 'Saved automatically on this device at '
+      + t + '. Closing the app will not lose it. Press Save session when you are done to file it in the log.</p>';
   }
 
   function renderDraftEditor(){
@@ -1049,6 +1268,7 @@
       + '<h2>' + esc(dayInfo.label) + '</h2>'
       + '<p class="soft">' + esc(dayInfo.tagline) + '</p>'
       + '<div class="field-row"><label>Date<input type="date" id="draft-date" value="' + draft.date + '" data-action="set-draft-date"></label></div>'
+      + autoSaveLine()
       + '</div>'
       + exCards
       + '<div class="card">'
@@ -1342,6 +1562,7 @@
 
   /* ---------------- top-level render ---------------- */
   function render(){
+    saveDraft();
     var root = document.getElementById("app");
     root.innerHTML = renderPersonSwitcher() + renderTabs()
       + '<main class="content">' + (
@@ -1365,6 +1586,7 @@
     var prs = computeSessionPRs(ui.person, session);
     ui.saveConfirmation = { person: ui.person, sessionId: session.id, prs: prs };
     ui.draft = null;
+    ui.resumed = false;
     ui.view = "dashboard";
   }
 
@@ -1483,6 +1705,204 @@
     render();
   }
 
+  /* ---------------- wheel picker ----------------
+     A bottom sheet with a scroll-snapping column, opened already centred on
+     the current value. Lives outside #app so a re-render cannot disturb it. */
+  var WHEEL_ITEM_H = 46;
+  var wheelEl = null;
+
+  function closeWheel(){
+    if (wheelEl && wheelEl.parentNode) wheelEl.parentNode.removeChild(wheelEl);
+    wheelEl = null;
+  }
+
+  function openWheel(opts){
+    closeWheel();
+    var values = opts.values;
+    var idx = values.indexOf(opts.current);
+    if (idx < 0){
+      /* current value is off the ladder: land on the nearest rung */
+      var best = 0, bestD = Infinity;
+      for (var i=0;i<values.length;i++){
+        var d = Math.abs(values[i] - opts.current);
+        if (d < bestD){ bestD = d; best = i; }
+      }
+      idx = best;
+    }
+    var optsHtml = values.map(function(v, i){
+      return '<div class="wheel-opt" data-wheel-opt="' + i + '">' + esc(opts.format(v)) + '</div>';
+    }).join("");
+
+    var el = document.createElement("div");
+    el.className = "wheel-backdrop";
+    el.innerHTML = '<div class="wheel-sheet" role="dialog" aria-label="' + esc(opts.title) + '">'
+      + '<div class="wheel-title">' + esc(opts.title) + '</div>'
+      + '<div class="wheel-wrap"><div class="wheel-band"></div>'
+      + '<div class="wheel-scroll">' + optsHtml + '</div></div>'
+      + '<div class="wheel-actions">'
+      + '<button type="button" class="btn ghost" data-wheel="cancel">Cancel</button>'
+      + '<button type="button" class="btn primary" data-wheel="done">Done</button>'
+      + '</div></div>';
+    document.body.appendChild(el);
+    wheelEl = el;
+
+    var scroller = el.querySelector(".wheel-scroll");
+    scroller.scrollTop = idx * WHEEL_ITEM_H;
+    /* Safari settles layout a frame late; re-assert once it has. */
+    requestAnimationFrame(function(){ scroller.scrollTop = idx * WHEEL_ITEM_H; });
+
+    function commit(i){
+      if (i < 0) i = 0;
+      if (i > values.length - 1) i = values.length - 1;
+      closeWheel();
+      opts.onPick(values[i]);
+    }
+
+    el.addEventListener("click", function(ev){
+      var optBtn = ev.target.closest("[data-wheel-opt]");
+      if (optBtn){ commit(Number(optBtn.dataset.wheelOpt)); return; }
+      var act = ev.target.closest("[data-wheel]");
+      if (act){
+        if (act.dataset.wheel === "cancel") closeWheel();
+        else commit(Math.round(scroller.scrollTop / WHEEL_ITEM_H));
+        return;
+      }
+      if (ev.target === el) closeWheel();
+    });
+  }
+
+  function rangeValues(min, max, step){
+    var out = [];
+    for (var v = min; v <= max + 1e-9; v += step) out.push(Math.round(v*100)/100);
+    return out;
+  }
+  var WHEEL_WEIGHT = rangeValues(0, 200, 0.5);
+  var WHEEL_REPS = rangeValues(0, 50, 1);
+  var WHEEL_TIME = rangeValues(0, 300, 5);
+  var WHEEL_DIST = rangeValues(0, 200, 5);
+  /* Lewis asked for 1.5 to 3.5 minutes. The shorter rungs are kept because the
+     plan itself prescribes 45 and 60 second rests on the accessory work. */
+  var WHEEL_REST = [45, 60, 90, 120, 150, 180, 210];
+
+  function openSetWheel(itemIdx, setIdx, field){
+    var it = findItem(itemIdx);
+    var set = it.sets[setIdx];
+    var ex = getExerciseMeta(ui.draft.day, it.exerciseId);
+    var mode = exMode(ex);
+    var name = exName(ex, ui.person);
+    var values, fmt, title;
+    if (field === "weight"){
+      values = WHEEL_WEIGHT;
+      fmt = function(v){ return v + " kg"; };
+      title = name + " - weight";
+    } else if (mode === "time"){
+      values = WHEEL_TIME;
+      fmt = function(v){ return v + " sec"; };
+      title = name + " - hold";
+    } else if (mode === "distance"){
+      values = WHEEL_DIST;
+      fmt = function(v){ return v + " m"; };
+      title = name + " - distance";
+    } else {
+      values = WHEEL_REPS;
+      fmt = function(v){ return v + " reps"; };
+      title = name + " - reps";
+    }
+    openWheel({
+      title: title + ", set " + (setIdx+1),
+      values: values,
+      current: Number(set[field]) || 0,
+      format: fmt,
+      onPick: function(v){ set[field] = v; render(); }
+    });
+  }
+
+  /* ---------------- rest timer ----------------
+     One timer, shown in a fixed bar. It runs off wall-clock time so it stays
+     honest if the screen sleeps, and it repaints itself rather than going
+     through render() once a second. */
+  var restState = { endAt:0, label:"", tick:null, beeped:false };
+  var restBarEl = null;
+  var audioCtx = null;
+
+  function restSecondsFor(exId){
+    var v = ui.restChoice[exId];
+    return (typeof v === "number") ? v : planRestSeconds(exId);
+  }
+
+  function ensureRestBar(){
+    if (restBarEl) return restBarEl;
+    var el = document.createElement("div");
+    el.className = "rest-bar";
+    el.id = "rest-bar";
+    el.innerHTML = '<span class="rest-clock">0:00</span>'
+      + '<span class="rest-what"></span>'
+      + '<button type="button" data-rest="add">+30s</button>'
+      + '<button type="button" data-rest="stop">Stop</button>';
+    document.body.appendChild(el);
+    el.addEventListener("click", function(ev){
+      var b = ev.target.closest("[data-rest]");
+      if (!b) return;
+      if (b.dataset.rest === "stop") stopRest();
+      else { restState.endAt += 30000; restState.beeped = false; paintRest(); }
+    });
+    restBarEl = el;
+    return el;
+  }
+
+  function beep(){
+    try{
+      if (!audioCtx) return;
+      var t = audioCtx.currentTime;
+      [0, 0.3].forEach(function(off){
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = 880;
+        g.gain.setValueAtTime(0.0001, t + off);
+        g.gain.exponentialRampToValueAtTime(0.3, t + off + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.24);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t + off); o.stop(t + off + 0.27);
+      });
+    } catch(e){ /* no audio available */ }
+  }
+
+  function paintRest(){
+    var el = ensureRestBar();
+    var left = Math.round((restState.endAt - Date.now()) / 1000);
+    var over = left < 0;
+    if (over && !restState.beeped){ restState.beeped = true; beep(); }
+    el.className = "rest-bar on" + (over ? " done" : "");
+    el.querySelector(".rest-clock").textContent = over ? "+" + fmtClock(-left) : fmtClock(left);
+    el.querySelector(".rest-what").textContent = over ? ("Rest over - " + restState.label) : restState.label;
+  }
+
+  function startRest(exId, seconds){
+    /* The tap that starts the timer is the gesture that unlocks audio on iOS. */
+    try{
+      if (!audioCtx && (window.AudioContext || window.webkitAudioContext)){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    } catch(e){ audioCtx = null; }
+
+    var ex = findExerciseMetaAnyDay(exId);
+    restState.label = ex ? exName(ex.ex, ui.person) : "Rest";
+    restState.endAt = Date.now() + seconds * 1000;
+    restState.beeped = false;
+    document.body.classList.add("rest-active");
+    if (restState.tick) clearInterval(restState.tick);
+    restState.tick = setInterval(paintRest, 250);
+    paintRest();
+  }
+
+  function stopRest(){
+    if (restState.tick) clearInterval(restState.tick);
+    restState.tick = null;
+    document.body.classList.remove("rest-active");
+    if (restBarEl) restBarEl.className = "rest-bar";
+  }
+
   /* ---------------- event delegation ---------------- */
   var root = document.getElementById("app");
 
@@ -1521,6 +1941,7 @@
       var date = (dateEl && dateEl.value) ? dateEl.value : todayISO();
       var day = (dayEl && dayEl.value) ? dayEl.value : "A";
       ui.draft = buildDraftForDay(ui.person, day, date);
+      ui.resumed = false;
       render();
       return;
     }
@@ -1548,22 +1969,33 @@
       return;
     }
 
-    if (action === "inc-weight" || action === "dec-weight"){
-      var it4 = findItem(Number(btn.dataset.item));
-      var s4 = it4.sets[Number(btn.dataset.set)];
-      var delta = action === "inc-weight" ? 2.5 : -2.5;
-      s4.weight = clamp(roundHalf(s4.weight + delta), 0);
+    if (action === "open-wheel"){
+      openSetWheel(Number(btn.dataset.item), Number(btn.dataset.set), btn.dataset.field);
+      return;
+    }
+
+    if (action === "toggle-coach"){
+      var cid = btn.dataset.ex;
+      ui.openCoach[cid] = !ui.openCoach[cid];
       render();
       return;
     }
 
-    if (action === "inc-reps" || action === "dec-reps"){
-      var it5 = findItem(Number(btn.dataset.item));
-      var s5 = it5.sets[Number(btn.dataset.set)];
-      var stepSize = Number(btn.dataset.step) || 1;
-      var d5 = (action === "inc-reps" ? 1 : -1) * stepSize;
-      s5.reps = clamp(s5.reps + d5, 0);
-      render();
+    if (action === "open-rest-wheel"){
+      var rid = btn.dataset.ex;
+      openWheel({
+        title: "Rest between sets",
+        values: WHEEL_REST,
+        current: restSecondsFor(rid),
+        format: function(v){ return fmtClock(v); },
+        onPick: function(v){ ui.restChoice[rid] = v; render(); }
+      });
+      return;
+    }
+
+    if (action === "start-rest"){
+      var sid = btn.dataset.ex;
+      startRest(sid, restSecondsFor(sid));
       return;
     }
 
@@ -1593,6 +2025,7 @@
       var sess = personSessions(ui.person).find(function(s){ return s.id === btn.dataset.id; });
       if (sess){
         ui.draft = sessionToDraft(sess);
+        ui.resumed = false;
         ui.view = "log";
         render();
       }
@@ -1605,6 +2038,7 @@
       if (!pc) { render(); return; }
       if (pc.type === "discard-draft"){
         ui.draft = null;
+        ui.resumed = false;
       } else if (pc.type === "delete-session"){
         var list = personSessions(ui.person);
         var idx = list.findIndex(function(s){ return s.id === pc.id; });
@@ -1676,15 +2110,27 @@
     }
     if (el.id === "draft-date"){
       ui.draft.date = el.value || todayISO();
+      saveDraft();
       return;
     }
     if (el.id === "draft-notes"){
       ui.draft.notes = el.value;
+      saveDraft();
       return;
     }
     if (el.id === "draft-deload"){
       ui.draft.deload = el.checked;
+      saveDraft();
       return;
+    }
+  });
+
+  /* The notes box only fires "change" on blur, which is exactly when the app
+     might be closed. Persist as it is typed instead. */
+  root.addEventListener("input", function(e){
+    if (e.target.id === "draft-notes" && ui.draft){
+      ui.draft.notes = e.target.value;
+      saveDraft();
     }
   });
 
@@ -1714,6 +2160,16 @@
       }
     } catch (e){ /* offline caching unavailable; app still works online */ }
   }
+
+  /* Pick up any session that was left unfinished when the app was last closed. */
+  (function restoreDraft(){
+    var saved = loadSavedDraft();
+    if (!saved) return;
+    ui.person = saved.person;
+    ui.draft = saved.draft;
+    ui.view = "log";
+    ui.resumed = true;
+  })();
 
   render();
   initDownloads();
