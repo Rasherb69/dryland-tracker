@@ -106,8 +106,8 @@
     cursor:pointer;
   }
   .switch-btn.active{
-    background:var(--teal);
-    border-color:var(--teal);
+    background:var(--buoy);
+    border-color:var(--buoy);
     color:var(--stone);
   }
 
@@ -282,17 +282,20 @@
   }
   .rest-bar{
     position:fixed;left:0;right:0;bottom:0;z-index:40;
-    display:none;align-items:center;gap:0.6rem;
-    padding:0.7rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom));
-    background:#14524C;color:#fff;
+    display:none;align-items:center;gap:0.55rem;
+    padding-top:0.7rem;
+    padding-bottom:calc(0.7rem + env(safe-area-inset-bottom));
+    padding-left:calc(1.3rem + env(safe-area-inset-left));
+    padding-right:calc(1.3rem + env(safe-area-inset-right));
+    background:#B04E26;color:#fff;
     box-shadow:0 -6px 20px rgba(0,0,0,0.22);
   }
   .rest-bar.on{display:flex;}
-  .rest-bar.done{background:#A8431F;}
-  .rest-bar .rest-what{font-size:0.74rem;opacity:0.85;flex:1 1 auto;min-width:0;
+  .rest-bar.done{background:#14524C;}
+  .rest-bar .rest-what{font-size:0.74rem;opacity:0.92;flex:1 1 0;min-width:0;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .rest-bar .rest-clock{
-    font-family:var(--mono);font-size:1.5rem;font-weight:700;
+    font-family:var(--mono);font-size:1.4rem;font-weight:700;
     font-variant-numeric:tabular-nums;flex:0 0 auto;
   }
   .rest-bar button{
@@ -320,7 +323,8 @@
   .wheel-title{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--ink);text-align:center;}
   .wheel-wrap{position:relative;height:230px;}
   .wheel-band{
-    position:absolute;left:0;right:0;top:92px;height:46px;
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:7.5rem;top:92px;height:46px;
     border-top:1px solid var(--teal-soft);border-bottom:1px solid var(--teal-soft);
     background:var(--surface-soft);
     border-radius:8px;pointer-events:none;
@@ -603,7 +607,7 @@
   "use strict";
 
   var STORAGE_KEY = "dryland-tracker-v1";
-  var BUILD = "24 Aug 2026 a";
+  var BUILD = "24 Aug 2026 b";
   var CORRUPT_KEY = "dryland-tracker-v1-corrupt";
   var DRAFT_KEY = "dryland-tracker-v1-draft";
   var DAY_ORDER = ["A","B","C"];
