@@ -204,12 +204,12 @@
   .exercise-meta{font-size:0.76rem;color:var(--ink-soft);font-family:var(--mono);}
 
   .set-row{
-    display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;
+    display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;
     padding:0.4rem 0;
     border-top:1px dashed var(--line);
   }
   .set-row:first-of-type{border-top:none;}
-  .set-num{font-size:0.78rem;color:var(--ink-soft);width:3.4rem;flex:0 0 auto;}
+  .set-num{font-size:0.78rem;color:var(--ink-soft);width:2.9rem;flex:0 0 auto;}
   .stepper{display:flex;align-items:center;gap:0.3rem;}
   .stepper button{
     min-width:44px;min-height:44px;
@@ -226,7 +226,7 @@
   }
   .unit{font-size:0.72rem;color:var(--ink-soft);}
   .icon-btn{
-    min-width:44px;min-height:44px;
+    min-width:42px;min-height:44px;
     border-radius:8px;border:1px solid var(--line);
     background:var(--surface-soft);color:var(--buoy);
     font-size:1rem;cursor:pointer;
@@ -259,8 +259,9 @@
 
   /* ---- Tap-to-spin value chips (replaced the +/- steppers) ---- */
   .val-chip{
-    display:inline-flex;align-items:baseline;gap:0.25rem;
-    min-height:48px;min-width:5.2rem;padding:0 0.7rem;
+    display:inline-flex;align-items:center;gap:0.25rem;
+    line-height:1;
+    min-height:48px;min-width:4.5rem;padding:0 0.6rem;
     justify-content:center;
     border-radius:10px;border:1px solid var(--line);
     background:var(--surface-soft);color:var(--ink);
@@ -270,6 +271,31 @@
   }
   .val-chip .unit{font-family:var(--sans);font-weight:400;}
   .val-chip:active{border-color:var(--teal-soft);}
+
+  /* ---- Set-done thumb: outline until the set is done, then solid orange ---- */
+  .done-btn{
+    min-width:42px;min-height:44px;flex:0 0 auto;
+    display:inline-flex;align-items:center;justify-content:center;
+    border-radius:8px;border:1px solid var(--line);
+    background:var(--surface-soft);color:var(--ink-soft);
+    cursor:pointer;padding:0;
+  }
+  .done-btn svg{
+    display:block;
+    fill:none;stroke:currentColor;stroke-width:1.5;
+    stroke-linejoin:round;stroke-linecap:round;
+  }
+  .done-btn.done{color:var(--buoy);border-color:var(--buoy);}
+  .done-btn.done svg{fill:currentColor;stroke:currentColor;}
+
+  /* Very narrow handsets (iPhone SE and similar): tighten the set row so the
+     values, the thumb and the delete button still share one line. */
+  @media (max-width:370px){
+    .set-row{gap:0.3rem;}
+    .set-num{width:2.2rem;font-size:0.72rem;}
+    .val-chip{min-width:4rem;padding:0 0.4rem;font-size:1rem;}
+    .done-btn,.icon-btn{min-width:38px;}
+  }
 
   /* ---- Rest timer ---- */
   .rest-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
@@ -607,7 +633,7 @@
   "use strict";
 
   var STORAGE_KEY = "dryland-tracker-v1";
-  var BUILD = "24 Aug 2026 b";
+  var BUILD = "26 Aug 2026 a";
   var CORRUPT_KEY = "dryland-tracker-v1-corrupt";
   var DRAFT_KEY = "dryland-tracker-v1-draft";
   var DAY_ORDER = ["A","B","C"];
@@ -1165,6 +1191,13 @@
       + '</div>';
   }
 
+  /* Outline by default; the CSS fills it solid orange once the set is ticked off. */
+  var THUMB_SVG = '<svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false">'
+    + '<rect x="2.7" y="10.6" width="3.7" height="9.6" rx="0.9"></rect>'
+    + '<path d="M7.5 20.2V10.8l3.9-7.1a1.7 1.7 0 0 1 3.15 1.15l-1 5.05h5.2'
+    + 'a2 2 0 0 1 1.96 2.42l-1.3 5.9a2 2 0 0 1-1.96 1.58Z"></path>'
+    + '</svg>';
+
   /* Values are set by spinning a wheel, not by typing: no keyboard, so no
      page zoom, and no fiddly text entry with cold hands. */
   function valueChip(itemIdx, setIdx, field, value, unit, label){
@@ -1180,12 +1213,17 @@
     var unit = mode === "time" ? "sec" : (mode === "distance" ? "m" : "reps");
     var lbl = mode === "time" ? "Hold" : (mode === "distance" ? "Distance" : "Reps");
     var valuePart = valueChip(itemIdx, setIdx, "reps", set.reps, unit, lbl);
+    var da = ' data-item="' + itemIdx + '" data-set="' + setIdx + '"';
+    var isDone = !!set.done;
     return '<div class="set-row' + (mode === "time" ? " bodyweight" : "") + '">'
       + '<span class="set-num">Set ' + (setIdx+1) + '</span>'
       + weightPart
       + valuePart
-      + '<button type="button" class="icon-btn" data-action="remove-set"'
-      + ' data-item="' + itemIdx + '" data-set="' + setIdx + '" aria-label="Remove set">&times;</button>'
+      + '<button type="button" class="done-btn' + (isDone ? " done" : "") + '" data-action="toggle-done"' + da
+      + ' aria-pressed="' + isDone + '" aria-label="Set ' + (setIdx+1) + (isDone ? ", done" : ", mark as done") + '">'
+      + THUMB_SVG + '</button>'
+      + '<button type="button" class="icon-btn" data-action="remove-set"' + da
+      + ' aria-label="Remove set">&times;</button>'
       + '</div>';
   }
 
@@ -1975,6 +2013,14 @@
 
     if (action === "open-wheel"){
       openSetWheel(Number(btn.dataset.item), Number(btn.dataset.set), btn.dataset.field);
+      return;
+    }
+
+    if (action === "toggle-done"){
+      var itd = findItem(Number(btn.dataset.item));
+      var sd = itd.sets[Number(btn.dataset.set)];
+      sd.done = !sd.done;
+      render();
       return;
     }
 

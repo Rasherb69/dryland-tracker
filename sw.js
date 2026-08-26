@@ -6,7 +6,7 @@
    was answered by the browser's own HTTP cache. Every fetch here uses
    cache:"no-store" so the network copy is always genuinely fresh.
    Bump CACHE on every deploy. */
-var CACHE = "dryland-v9";
+var CACHE = "dryland-v10";
 var NET_TIMEOUT_MS = 3000;
 var ASSETS = ["./", "index.html", "plan.html", "manifest.webmanifest",
               "icon-180.png", "icon-192.png", "icon-512.png"];
